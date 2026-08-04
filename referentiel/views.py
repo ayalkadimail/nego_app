@@ -96,6 +96,7 @@ class PrixReferenceViewSet(viewsets.ModelViewSet):
     serializer_class = PrixReferenceWriteSerializer
     permission_classes = [HasRole]
     allowed_roles = ['ADMINISTRATEUR']
+    read_open_to_all_roles = True
 
 
 # ---- Import EF-04 : Articles ----
