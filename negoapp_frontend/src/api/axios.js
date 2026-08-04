@@ -4,4 +4,12 @@ const api = axios.create({
   baseURL: 'http://localhost:8000/api/',
 });
 
+api.interceptors.request.use((config) => {
+  const userId = localStorage.getItem('negoapp_user_id');
+  if (userId) {
+    config.headers['X-User-Id'] = userId;
+  }
+  return config;
+});
+
 export default api;

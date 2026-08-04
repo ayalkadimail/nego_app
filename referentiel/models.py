@@ -11,18 +11,45 @@ class Fournisseur(models.Model):
 
 
 class Article(models.Model):
+    FAMILLE_ACHAT_CHOICES = [
+        ('Semiconducteur', 'Semiconducteur'),
+        ('Interconnection', 'Interconnection'),
+        ('PCBs', 'PCBs'),
+        ('Passif', 'Passif'),
+        ('Mécanique', 'Mécanique'),
+        ('Electromécanique', 'Electromécanique'),
+        ('Inductifs', 'Inductifs'),
+        ('Power', 'Power'),
+        ('Piezo', 'Piezo'),
+        ('Piles', 'Piles'),
+        ('Carte Mère', 'Carte Mère'),
+        ('Afficheurs', 'Afficheurs'),
+        ('Pièce sur plan', 'Pièce sur plan'),
+    ]
+    CATEGORIE_CHOICES = [
+        ('Capacitifs', 'Capacitifs'),
+        ('Résistifs', 'Résistifs'),
+        ('Circuit intégré analogique', 'Circuit intégré analogique'),
+        ('Connectique', 'Connectique'),
+        ('Diodes', 'Diodes'),
+        ('Cable et filaire', 'Cable et filaire'),
+        ('Transistors', 'Transistors'),
+        ('Inductifs', 'Inductifs'),
+        ('Electromécanique', 'Electromécanique'),
+        ('Piezo', 'Piezo'),
+    ]
+
     cpn = models.CharField(max_length=100, unique=True)
     short_desc = models.CharField(max_length=255, blank=True)
     long_desc = models.TextField(blank=True)
     customer = models.CharField(max_length=150, blank=True)
     site = models.CharField(max_length=150, blank=True)
-    famille_achat = models.CharField(max_length=150, blank=True)
-    categorie = models.CharField(max_length=150, blank=True)
+    famille_achat = models.CharField(max_length=150, blank=True, choices=FAMILLE_ACHAT_CHOICES)
+    categorie = models.CharField(max_length=150, blank=True, choices=CATEGORIE_CHOICES)
     obsolete = models.BooleanField(default=False)
 
     def __str__(self):
         return self.cpn
-
 
 class MpnQualifie(models.Model):
     mpn = models.CharField(max_length=100)

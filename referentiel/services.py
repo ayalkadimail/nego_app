@@ -5,6 +5,9 @@ from .models import Article, Fournisseur
 ARTICLE_COLUMNS = ['CPN', 'Désignation', 'Famille achats', 'Catégorie', 'Client', 'Site', 'Obsolète']
 FOURNISSEUR_COLUMNS = ['Nom', 'Contact', 'Actif']
 
+FAMILLES_VALIDES = {c[0] for c in Article.FAMILLE_ACHAT_CHOICES}
+CATEGORIES_VALIDES = {c[0] for c in Article.CATEGORIE_CHOICES}
+
 
 def _lire_lignes(fichier):
     wb = openpyxl.load_workbook(fichier, data_only=True, read_only=True)
@@ -52,11 +55,33 @@ def valider_articles(fichier):
             continue
         vus_dans_fichier.add(cpn)
 
-        famille = _valeur(d, 'Famille achats')
+        famille_brute = _valeur(d, 'Famille achats')
+        categorie_brute = _valeur(d, 'Catégorie')
         avertissements = []
-        if not famille:
+
+        if not famille_brute:
             famille = 'Non catégorisé'
             avertissements.append('Famille achats absente — classé "Non catégorisé"')
+        elif famille_brute not in FAMILLES_VALIDES:
+            famille = ''
+            avertissements.append(
+                f'Famille achats "{famille_brute}" non reconnue — ligne ignorée, à corriger dans le fichier ou ajouter à la liste des familles'
+            )
+        else:
+            famille = famille_brute
+
+        if categorie_brute and categorie_brute not in CATEGORIES_VALIDES:
+            avertissements.append(f'Catégorie "{categorie_brute}" non reconnue — laissée vide')
+            categorie_brute = ''
+
+        # Famille non reconnue = ligne bloquante (ERREUR), pas juste un avertissement,
+        # car il n'y a pas de valeur de repli valable comme pour "vide" -> "Non catégorisé"
+        if famille_brute and famille_brute not in FAMILLES_VALIDES:
+            rapport.append({'ligne': i, 'cpn': cpn, 'designation': designation,
+                             'statut': 'ERREUR',
+                             'detail': f'Famille achats "{famille_brute}" non reconnue par NegoApp'})
+            continue
+
         if cpn in existants:
             avertissements.append(f'CPN {cpn} déjà existant — sera mis à jour')
 
@@ -64,7 +89,7 @@ def valider_articles(fichier):
             'cpn': cpn,
             'short_desc': designation,
             'famille_achat': famille,
-            'categorie': _valeur(d, 'Catégorie'),
+            'categorie': categorie_brute,
             'customer': _valeur(d, 'Client'),
             'site': _valeur(d, 'Site'),
             'obsolete': _bool_fr(d.get('Obsolète')),
