@@ -4,9 +4,14 @@ from users.models import Utilisateur
 
 
 class Negociation(models.Model):
-    code_nego = models.CharField(max_length=100, unique=True)  # séquence annuelle, ex. NEGO-2026-0001
+    STATUT_CHOICES = [
+        ('OUVERTE', 'Ouverte'),
+        ('CLOTUREE', 'Clôturée'),
+        ('SANS_OFFRE', 'Sans offre'),
+    ]
+    code_nego = models.CharField(max_length=100, unique=True)
     annee = models.IntegerField()
-    statut = models.CharField(max_length=20)
+    statut = models.CharField(max_length=20, choices=STATUT_CHOICES, default='OUVERTE')
     date_creation = models.DateTimeField(auto_now_add=True)
     date_cloture = models.DateTimeField(null=True, blank=True)
     commentaire = models.TextField(blank=True)
@@ -60,18 +65,6 @@ class OffreFournisseur(models.Model):
     date_validite = models.DateField()
     retenu = models.BooleanField(default=False)
 
-
-class PrixReference(models.Model):
-    TYPE_CHOICES = [('PMA', 'PMA'), ('PAV', 'PAV')]  # 'NEGO' retiré -> vit dans HistoriqueNego
-    type = models.CharField(max_length=10, choices=TYPE_CHOICES)
-    prix_eur = models.DecimalField(max_digits=12, decimal_places=4)
-    annee = models.IntegerField()
-    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='prix_references')
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['article', 'type', 'annee'], name='uniq_prix_reference')
-        ]
 
 
 class Saving(models.Model):

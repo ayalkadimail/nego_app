@@ -1,10 +1,10 @@
 from django.db import models
 
+
 class Fournisseur(models.Model):
     nom = models.CharField(max_length=200)
     contact = models.CharField(max_length=200, blank=True)
     actif = models.BooleanField(default=True)
-    # devise = models.CharField(max_length=3)  # en suspens — question encadrant, pas utilisé dans les maquettes
 
     def __str__(self):
         return self.nom
@@ -19,7 +19,6 @@ class Article(models.Model):
     famille_achat = models.CharField(max_length=150, blank=True)
     categorie = models.CharField(max_length=150, blank=True)
     obsolete = models.BooleanField(default=False)
-    # forecast supprimé -> vit maintenant sur NegociationArticle
 
     def __str__(self):
         return self.cpn
@@ -41,3 +40,19 @@ class MpnQualifie(models.Model):
 
     def __str__(self):
         return f"{self.mpn} ({self.fabricant_nom})"
+
+
+class PrixReference(models.Model):
+    TYPE_CHOICES = [('PMA', 'PMA'), ('PAV', 'PAV')]
+    type = models.CharField(max_length=10, choices=TYPE_CHOICES)
+    prix_eur = models.DecimalField(max_digits=12, decimal_places=4)
+    annee = models.IntegerField()
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='prix_references')
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['article', 'type', 'annee'], name='uniq_prix_reference')
+        ]
+
+    def __str__(self):
+        return f"{self.article.cpn} — {self.type} {self.annee}"

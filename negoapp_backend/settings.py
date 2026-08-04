@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_filters',
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
@@ -46,6 +47,11 @@ INSTALLED_APPS = [
     'negociations',
     'historique',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 20,  # cohérent avec la maquette "1–20 sur 3 214"
+}
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',   # obligatoirement en premier, ou juste après SecurityMiddleware
