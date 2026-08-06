@@ -70,14 +70,19 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:5173",
-# ]
 CORS_ALLOWED_ORIGINS = [
-    "http://172.20.9.142:5173", # port par défaut de Vite
+    "http://localhost:5173",
 ]
 
- 
+# Vite peut choisir un autre port local si 5173 est déjà occupé.
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^http://localhost:\d+$",
+    r"^http://127\.0\.0\.1:\d+$",
+]
+
+# Configuration de développement local : front Vite et API peuvent tourner
+# sur des ports/adresses locales différents.
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'negoapp_backend.urls'
 

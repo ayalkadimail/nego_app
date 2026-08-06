@@ -4,7 +4,7 @@ import { previewImportArticles, confirmImportArticles } from '../../../api/refer
 export default function ArticleImportPage() {
   return (
     <ImportWizard
-      title="Import du référentiel articles"
+      title="Import des articles"
       formatHint="Le fichier doit respecter le modèle NegoApp (colonnes fixes : CPN, Désignation, Famille achats, Catégorie, Client, Site, Obsolète)."
       backLink="/referentiel/articles"
       onPreview={previewImportArticles}

@@ -24,7 +24,7 @@ export default function ArticleListPage() {
     <div>
       <div className="flex justify-between items-start mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-navy-950">Référentiel articles</h1>
+          <h1 className="text-2xl font-bold text-navy-950">Articles</h1>
           <p className="text-sm text-slate-500">{data.count} articles</p>
         </div>
         <div className="flex gap-2">
@@ -59,17 +59,16 @@ export default function ArticleListPage() {
               <th className="text-left px-4 py-3">Client</th>
               <th className="text-left px-4 py-3">MPN qualifiés</th>
               <th className="text-right px-4 py-3">PMA</th>
-              <th className="text-right px-4 py-3">PAV</th>
               <th className="text-center px-4 py-3">Obsolète</th>
               <th className="text-left px-4 py-3">Négo en cours</th>
             </tr>
           </thead>
           <tbody>
             {loading && (
-              <tr><td colSpan={9} className="text-center py-8 text-slate-400">Chargement...</td></tr>
+              <tr><td colSpan={8} className="text-center py-8 text-slate-400">Chargement...</td></tr>
             )}
             {!loading && data.results.length === 0 && (
-              <tr><td colSpan={9} className="text-center py-8 text-slate-400">Aucun article trouvé</td></tr>
+              <tr><td colSpan={8} className="text-center py-8 text-slate-400">Aucun article trouvé</td></tr>
             )}
             {!loading && data.results.map((article) => (
               <tr key={article.id} className="border-t border-slate-100 hover:bg-slate-50">
@@ -84,8 +83,7 @@ export default function ArticleListPage() {
                 <td className="px-4 py-3">
                   {article.nb_mpn_qualifies > 0 ? `${article.nb_mpn_qualifies} fabricant${article.nb_mpn_qualifies > 1 ? 's' : ''}` : '—'}
                 </td>
-                <td className="px-4 py-3 text-right">{article.pma ? `${Number(article.pma).toFixed(2)} €` : '—'}</td>
-                <td className="px-4 py-3 text-right">{article.pav ? `${Number(article.pav).toFixed(2)} €` : '—'}</td>
+                <td className="px-4 py-3 text-right">{article.pma !== null && article.pma !== undefined ? `${Number(article.pma).toFixed(2)} €` : '—'}</td>
                 <td className="px-4 py-3 text-center">
                   <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
                     article.obsolete ? 'bg-rust-100 text-rust-600' : 'bg-slate-100 text-slate-500'

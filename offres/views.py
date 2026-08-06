@@ -31,9 +31,9 @@ def _parse_rows(upload):
     if not upload.name.lower().endswith('.csv'):
         raise ValueError('Le format CSV est pris en charge dans cette version.')
     rows = csv.DictReader(TextIOWrapper(upload.file, encoding='utf-8-sig'))
-    required = {'CPN', 'Prix unitaire'}
+    required = {'CPN', 'Prix unitaire', 'PVA'}
     if not required.issubset(set(rows.fieldnames or [])):
-        raise ValueError('Colonnes attendues : CPN, Prix unitaire (Fournisseur facultatif si choisi à l’écran).')
+        raise ValueError('Colonnes attendues : CPN, Prix unitaire, PVA (Fournisseur facultatif si choisi à l’écran).')
     return list(rows)
 
 
@@ -54,7 +54,7 @@ class OffreImportPreviewView(APIView):
         for index, row in enumerate(rows, 2):
             cpn = (row.get('CPN') or '').strip()
             supplier = (row.get('Fournisseur') or '').strip()
-            valid = bool(cpn and (supplier or fournisseur_id) and Article.objects.filter(cpn=cpn).exists())
+            valid = bool(cpn and (supplier or fournisseur_id) and row.get('PVA') and Article.objects.filter(cpn=cpn).exists())
             report.append({'ligne': index, 'cpn': cpn, 'fournisseur': supplier,
                            'prix_unitaire': row.get('Prix unitaire', ''), 'statut': 'OK' if valid else 'ERREUR',
                            'message': '' if valid else 'Article ou fournisseur introuvable / manquant.'})
@@ -82,9 +82,10 @@ class OffreImportConfirmView(APIView):
                 supplier = default_supplier or Fournisseur.objects.filter(nom__iexact=(row.get('Fournisseur') or '').strip(), actif=True).first()
                 try:
                     price = Decimal((row.get('Prix unitaire') or '').replace(',', '.'))
+                    pva = Decimal((row.get('PVA') or '').replace(',', '.'))
                 except (InvalidOperation, AttributeError):
                     price = None
-                if not article or not supplier or price is None:
+                if not article or not supplier or price is None or pva is None:
                     ignored += 1
                     continue
                 date_value = None
@@ -94,7 +95,7 @@ class OffreImportConfirmView(APIView):
                             date_value = datetime.strptime(row['Date de validité'], fmt).date(); break
                         except ValueError:
                             pass
-                Offre.objects.create(article=article, fournisseur=supplier, prix_unitaire=price,
+                Offre.objects.create(article=article, fournisseur=supplier, prix_unitaire=price, pva=pva,
                     devise=(row.get('Devise') or 'EUR').upper(), moq=int(row.get('MOQ') or 1),
                     mpq=int(row.get('MPQ') or 1), lead_time=int(row.get('Lead time') or 0),
                     ncnr=_as_bool(row.get('NCNR')), source_prix=row.get('Source du prix') or '', date_validite=date_value)

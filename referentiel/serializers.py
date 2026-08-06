@@ -25,13 +25,11 @@ class PrixReferenceWriteSerializer(serializers.ModelSerializer):
 
 class ArticleListSerializer(serializers.ModelSerializer):
     nb_mpn_qualifies = serializers.IntegerField(read_only=True)
-    pma = serializers.DecimalField(max_digits=12, decimal_places=4, read_only=True, allow_null=True)
-    pav = serializers.DecimalField(max_digits=12, decimal_places=4, read_only=True, allow_null=True)
 
     class Meta:
         model = Article
         fields = ['id', 'cpn', 'short_desc', 'famille_achat', 'categorie',
-                  'customer', 'site', 'obsolete', 'nb_mpn_qualifies', 'pma', 'pav']
+                  'customer', 'site', 'pma', 'obsolete', 'nb_mpn_qualifies']
 
 
 class ArticleDetailSerializer(serializers.ModelSerializer):
@@ -41,6 +39,7 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = '__all__'
+        extra_kwargs = {'pma': {'required': True}}
 
 
 class FournisseurSerializer(serializers.ModelSerializer):
@@ -52,12 +51,10 @@ class FournisseurSerializer(serializers.ModelSerializer):
 
 class ArticleListSerializer(serializers.ModelSerializer):
     nb_mpn_qualifies = serializers.IntegerField(read_only=True)
-    pma = serializers.DecimalField(max_digits=12, decimal_places=4, read_only=True, allow_null=True)
-    pav = serializers.DecimalField(max_digits=12, decimal_places=4, read_only=True, allow_null=True)
     negociation_ouverte_code = serializers.CharField(read_only=True, allow_null=True)
 
     class Meta:
         model = Article
         fields = ['id', 'cpn', 'short_desc', 'famille_achat', 'categorie',
-                  'customer', 'site', 'obsolete', 'nb_mpn_qualifies', 'pma', 'pav',
+                  'customer', 'site', 'pma', 'obsolete', 'nb_mpn_qualifies',
                   'negociation_ouverte_code']

@@ -4,6 +4,7 @@ from rest_framework import serializers
 from referentiel.models import Article, Fournisseur
 from .models import Negociation, NegociationArticle, ConsultationFournisseur, OffreFournisseur
 from .services import generer_code_nego, creer_negociation_avec_retry
+from historique.models import HistoriqueNego
 
 
 # ---- Création (étapes 1+2+3 des maquettes fusionnées en un seul appel) ----
@@ -86,13 +87,23 @@ class NegociationArticleDetailSerializer(serializers.ModelSerializer):
     meilleur_prix = serializers.DecimalField(max_digits=12, decimal_places=4, read_only=True, allow_null=True)
     fournisseur_retenu = serializers.CharField(read_only=True, allow_null=True)
     fournisseurs_consultes = serializers.SerializerMethodField()
+    prix_n_1 = serializers.SerializerMethodField()
 
     class Meta:
         model = NegociationArticle
         fields = ['id', 'article', 'article_cpn', 'article_desc', 'forecast',
-                  'nb_offres', 'meilleur_prix', 'fournisseur_retenu', 'fournisseurs_consultes']
+                  'nb_offres', 'meilleur_prix', 'fournisseur_retenu', 'fournisseurs_consultes', 'prix_n_1']
 
     def get_fournisseurs_consultes(self, obj):
         return list(
             obj.consultations.values_list('fournisseur__nom', flat=True)
         )
+
+    def get_prix_n_1(self, obj):
+        historique = HistoriqueNego.objects.filter(
+            article=obj.article, annee__lt=obj.negociation.annee
+        ).order_by('-annee').first()
+        if not historique:
+            return None
+        return {'annee': historique.annee, 'prix_eur': historique.prix_final_eur,
+                'fournisseur': historique.fournisseur_retenu_nom}

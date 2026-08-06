@@ -7,6 +7,7 @@ class Offre(models.Model):
     article = models.ForeignKey(Article, on_delete=models.PROTECT, related_name='offres_fournisseurs')
     fournisseur = models.ForeignKey(Fournisseur, on_delete=models.PROTECT, related_name='offres')
     prix_unitaire = models.DecimalField(max_digits=12, decimal_places=4)
+    pva = models.DecimalField(max_digits=12, decimal_places=4, default=0)
     devise = models.CharField(max_length=3, default='EUR')
     moq = models.PositiveIntegerField(default=1)
     mpq = models.PositiveIntegerField(default=1)

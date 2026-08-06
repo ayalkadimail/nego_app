@@ -11,6 +11,7 @@ import FournisseurFormPage from '../modules/referentiel/pages/FournisseurFormPag
 import OffreListPage from '../modules/offres/pages/OffreListPage';
 import OffreFormPage from '../modules/offres/pages/OffreFormPage';
 import OffreImportPage from '../modules/offres/pages/OffreImportPage';
+import HistoriquePage from '../modules/historique/pages/HistoriquePage';
 
 const Stub = ({ label }) => <div className="text-slate-400">{label} — à venir</div>;
 
@@ -22,7 +23,7 @@ export const router = createBrowserRouter([
       { index: true, element: <Stub label="Tableau de bord" /> },
       { path: 'tableau-de-bord', element: <Stub label="Tableau de bord" /> },
       { path: 'negociations', element: <Stub label="Liste des négociations" /> },
-      { path: 'historique', element: <Stub label="Historique" /> },
+      { path: 'historique', element: <HistoriquePage /> },
       { path: 'offres', element: <OffreListPage /> },
       { path: 'offres/nouvelle', element: <OffreFormPage /> },
       { path: 'offres/:id/modifier', element: <OffreFormPage /> },
@@ -38,6 +39,7 @@ export const router = createBrowserRouter([
       { path: 'referentiel/fournisseurs', element: <FournisseurListPage /> },
       { path: 'referentiel/fournisseurs/nouveau', element: <FournisseurFormPage /> },
       { path: 'referentiel/fournisseurs/:id', element: <FournisseurDetailPage /> },
-      { path: 'referentiel/fournisseurs/import', element: <FournisseurImportPage /> },    ],
+      { path: 'referentiel/fournisseurs/import', element: <FournisseurImportPage /> },
+    ],
   },
 ]);

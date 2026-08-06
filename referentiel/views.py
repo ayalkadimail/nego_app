@@ -37,12 +37,6 @@ class ArticleViewSet(SafeDeleteMixin, viewsets.ModelViewSet):
     def get_queryset(self):
         qs = Article.objects.all().order_by('cpn')
         if self.action == 'list':
-            pma_sq = PrixReference.objects.filter(
-                article=OuterRef('pk'), type='PMA'
-            ).order_by('-annee').values('prix_eur')[:1]
-            pav_sq = PrixReference.objects.filter(
-                article=OuterRef('pk'), type='PAV'
-            ).order_by('-annee').values('prix_eur')[:1]
             negociation_sq = Article.objects.filter(pk=OuterRef('pk')) \
                 .filter(negociations_liees__negociation__statut='OUVERTE') \
                 .order_by('-negociations_liees__negociation__date_creation') \
@@ -50,8 +44,6 @@ class ArticleViewSet(SafeDeleteMixin, viewsets.ModelViewSet):
 
             qs = qs.annotate(
                 nb_mpn_qualifies=Count('mpn_qualifies', distinct=True),
-                pma=Subquery(pma_sq),
-                pav=Subquery(pav_sq),
                 negociation_ouverte_code=Subquery(negociation_sq),
             )
         else:

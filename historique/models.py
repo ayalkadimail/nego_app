@@ -8,3 +8,9 @@ class HistoriqueNego(models.Model):
     fournisseur_retenu_nom = models.CharField(max_length=200)
     fournisseur = models.ForeignKey(Fournisseur, on_delete=models.SET_NULL, null=True)
     article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='historique')
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['article', 'annee'], name='uniq_historique_article_annee')
+        ]
+        ordering = ['article__cpn', '-annee']
