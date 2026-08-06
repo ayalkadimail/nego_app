@@ -46,6 +46,7 @@ class Article(models.Model):
     site = models.CharField(max_length=150, blank=True)
     famille_achat = models.CharField(max_length=150, blank=True, choices=FAMILLE_ACHAT_CHOICES)
     categorie = models.CharField(max_length=150, blank=True, choices=CATEGORIE_CHOICES)
+    pma = models.DecimalField(max_digits=12, decimal_places=4, default=0)
     obsolete = models.BooleanField(default=False)
 
     def __str__(self):
@@ -70,7 +71,7 @@ class MpnQualifie(models.Model):
 
 
 class PrixReference(models.Model):
-    TYPE_CHOICES = [('PMA', 'PMA'), ('PAV', 'PAV')]
+    TYPE_CHOICES = [('PMA', 'PMA')]
     type = models.CharField(max_length=10, choices=TYPE_CHOICES)
     prix_eur = models.DecimalField(max_digits=12, decimal_places=4)
     annee = models.IntegerField()

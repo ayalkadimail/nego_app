@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.db.models import Count, Q, Min, Subquery, OuterRef
 from django.utils import timezone
 from rest_framework import viewsets, status
@@ -11,6 +12,7 @@ from .serializers import (
     NegociationCreateSerializer, NegociationListSerializer,
     NegociationDetailSerializer, NegociationArticleDetailSerializer,
 )
+from historique.models import HistoriqueNego
 
 
 class NegociationViewSet(viewsets.ModelViewSet):
@@ -111,7 +113,22 @@ class NegociationViewSet(viewsets.ModelViewSet):
                 "articles_bloquants": bloquants,
             }, status=status.HTTP_409_CONFLICT)
 
-        negociation.statut = 'CLOTUREE'
-        negociation.date_cloture = timezone.now()
-        negociation.save()
+        with transaction.atomic():
+            for na in articles:
+                offre_retenue = OffreFournisseur.objects.select_related('fournisseur').get(
+                    negociation_article=na, retenu=True
+                )
+                HistoriqueNego.objects.update_or_create(
+                    article=na.article,
+                    annee=negociation.annee,
+                    defaults={
+                        'prix_final_eur': offre_retenue.prix_eur,
+                        'moq_final': offre_retenue.moq,
+                        'fournisseur_retenu_nom': offre_retenue.fournisseur.nom,
+                        'fournisseur': offre_retenue.fournisseur,
+                    },
+                )
+            negociation.statut = 'CLOTUREE'
+            negociation.date_cloture = timezone.now()
+            negociation.save()
         return Response(NegociationDetailSerializer(negociation).data)

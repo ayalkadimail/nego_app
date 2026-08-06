@@ -23,7 +23,7 @@ export default function Sidebar() {
       <NavLink to="/negociations" className={linkClass}>Liste des négociations</NavLink>
 
       <div className={sectionLabel}>Référentiels</div>
-      <NavLink to="/referentiel/articles" className={linkClass}>Référentiel articles</NavLink>
+      <NavLink to="/referentiel/articles" className={linkClass}>Articles</NavLink>
       <NavLink to="/referentiel/fournisseurs" className={linkClass}>Fournisseurs</NavLink>
       <NavLink to="/historique" className={linkClass}>Historique</NavLink>
     </aside>

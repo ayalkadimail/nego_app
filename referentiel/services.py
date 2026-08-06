@@ -2,7 +2,7 @@ import openpyxl
 
 from .models import Article, Fournisseur
 
-ARTICLE_COLUMNS = ['CPN', 'Désignation', 'Famille achats', 'Catégorie', 'Client', 'Site', 'Obsolète']
+ARTICLE_COLUMNS = ['CPN', 'Désignation', 'Famille achats', 'Catégorie', 'Client', 'Site', 'PMA', 'Obsolète']
 FOURNISSEUR_COLUMNS = ['Nom', 'Contact', 'Actif']
 
 FAMILLES_VALIDES = {c[0] for c in Article.FAMILLE_ACHAT_CHOICES}
@@ -30,6 +30,14 @@ def _bool_fr(valeur, defaut=False):
     return str(valeur).strip().lower() in ('oui', 'true', '1', 'vrai')
 
 
+def _decimal(d, cle):
+    valeur = _valeur(d, cle).replace(',', '.')
+    try:
+        return float(valeur)
+    except ValueError:
+        return None
+
+
 def valider_articles(fichier):
     entete, lignes = _lire_lignes(fichier)
     manquantes = [c for c in ARTICLE_COLUMNS if c not in entete]
@@ -44,10 +52,15 @@ def valider_articles(fichier):
         d = dict(zip(entete, ligne))
         cpn = _valeur(d, 'CPN')
         designation = _valeur(d, 'Désignation')
+        pma = _decimal(d, 'PMA')
 
         if not cpn:
             rapport.append({'ligne': i, 'cpn': None, 'designation': designation,
                              'statut': 'ERREUR', 'detail': 'CPN manquant sur cette ligne'})
+            continue
+        if pma is None or pma < 0:
+            rapport.append({'ligne': i, 'cpn': cpn, 'designation': designation,
+                             'statut': 'ERREUR', 'detail': 'PMA obligatoire et doit être un nombre positif'})
             continue
         if cpn in vus_dans_fichier:
             rapport.append({'ligne': i, 'cpn': cpn, 'designation': designation,
@@ -92,6 +105,7 @@ def valider_articles(fichier):
             'categorie': categorie_brute,
             'customer': _valeur(d, 'Client'),
             'site': _valeur(d, 'Site'),
+            'pma': pma,
             'obsolete': _bool_fr(d.get('Obsolète')),
         }
         lignes_valides.append(row_data)

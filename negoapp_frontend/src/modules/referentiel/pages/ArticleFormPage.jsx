@@ -10,6 +10,7 @@ const EMPTY_FORM = {
   categorie: '',
   customer: '',
   site: '',
+  pma: '',
   obsolete: false,
 };
 
@@ -33,6 +34,7 @@ export default function ArticleFormPage() {
         categorie: article.categorie || '',
         customer: article.customer || '',
         site: article.site || '',
+        pma: article.pma ?? '',
         obsolete: article.obsolete,
       });
       setLoading(false);
@@ -168,17 +170,16 @@ export default function ArticleFormPage() {
           </div>
         )}
 
-        {!isEdit && (
-          <div className="col-span-2">
-            <label className="text-sm font-medium text-navy-950">PMA / PAV</label>
+        <div>
+            <label className="text-sm font-medium text-navy-950">PMA (€)</label>
             <input
-              disabled
-              placeholder="Réservé à l'administrateur"
-              className="w-full border border-slate-300 rounded-lg px-3 py-2 mt-1 bg-slate-100 text-slate-400"
+              required type="number" min="0" step="0.0001"
+              value={form.pma} onChange={handleChange('pma')}
+              placeholder="ex: 12.50"
+              className="w-full border border-slate-300 rounded-lg px-3 py-2 mt-1"
             />
-            <p className="text-xs text-slate-400 mt-1">Sera renseigné séparément par l'Admin</p>
+            {errors.pma && <p className="text-rust-600 text-xs mt-1">{errors.pma[0]}</p>}
           </div>
-        )}
 
         {errors.non_field_errors && (
           <div className="col-span-2 text-rust-600 text-sm">{errors.non_field_errors[0]}</div>

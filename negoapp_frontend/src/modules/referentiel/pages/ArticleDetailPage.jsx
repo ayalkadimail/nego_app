@@ -12,8 +12,6 @@ export default function ArticleDetailPage() {
   if (error) return <div className="text-rust-600">{error}</div>;
   if (!article) return null;
 
-  const pma = article.prix_references?.find((p) => p.type === 'PMA');
-  const pav = article.prix_references?.find((p) => p.type === 'PAV');
 
   return (
     <div>
@@ -99,16 +97,12 @@ export default function ArticleDetailPage() {
         <div className="space-y-4">
           <div className="bg-white border border-slate-200 rounded-lg p-5">
             <h2 className="font-semibold text-navy-950 mb-3">Prix de référence</h2>
-            <div className="flex justify-between text-sm py-1.5 border-b border-slate-100">
-              <span>PAV {pav?.annee || ''}</span>
-              <span className="font-medium">{pav ? `${Number(pav.prix_eur).toFixed(2)} €` : 'Non renseigné'}</span>
-            </div>
             <div className="flex justify-between text-sm py-1.5">
-              <span>PMA {pma?.annee || ''}</span>
-              <span className="font-medium">{pma ? `${Number(pma.prix_eur).toFixed(2)} €` : 'Non renseigné'}</span>
+              <span>PMA</span>
+              <span className="font-medium">{Number(article.pma).toFixed(2)} €</span>
             </div>
             <p className="text-xs text-slate-400 mt-3">
-              🔒 PMA/PAV modifiables par l'Administrateur uniquement
+              Le PVA est renseigné sur chaque offre fournisseur.
             </p>
           </div>
 

@@ -10,5 +10,6 @@ class OffreSerializer(serializers.ModelSerializer):
     class Meta:
         model = Offre
         fields = ['id', 'article', 'article_cpn', 'article_desc', 'fournisseur', 'fournisseur_nom',
-                  'prix_unitaire', 'devise', 'moq', 'mpq', 'lead_time', 'ncnr', 'source_prix',
+                  'prix_unitaire', 'pva', 'devise', 'moq', 'mpq', 'lead_time', 'ncnr', 'source_prix',
                   'date_validite', 'date_creation', 'date_modification']
+        extra_kwargs = {'pva': {'required': True}}

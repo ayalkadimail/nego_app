@@ -69,6 +69,11 @@ CORS_ALLOWED_ORIGINS = [
     env('CORS_ORIGIN'),
 ]
 
+# Vite peut choisir un autre port local si 5173 est déjà occupé.
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^http://localhost:\d+$",
+    r"^http://127\.0\.0\.1:\d+$",
+]
 ROOT_URLCONF = 'negoapp_backend.urls'
 
 TEMPLATES = [
