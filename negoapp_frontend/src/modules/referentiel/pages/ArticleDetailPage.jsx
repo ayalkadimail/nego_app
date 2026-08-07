@@ -62,7 +62,9 @@ export default function ArticleDetailPage() {
                 <th className="text-left pb-2">MPN</th>
                 <th className="text-left pb-2">Réf. interne</th>
                 <th className="text-left pb-2">Pays</th>
+                <th className="text-left pb-2">Fournisseur</th>
                 <th className="text-left pb-2">Statut</th>
+                <th className="text-left pb-2">Qualifié le</th>
               </tr>
             </thead>
             <tbody>
@@ -72,6 +74,7 @@ export default function ArticleDetailPage() {
                   <td className="py-2 font-mono">{mpn.mpn}</td>
                   <td className="py-2 font-mono text-slate-500">{mpn.mpn_ref_interne || '—'}</td>
                   <td className="py-2">{mpn.pays_origine || '—'}</td>
+                  <td className="py-2">{mpn.fournisseur_nom || '—'}</td>
                   <td className="py-2">
                     <span className={`px-2 py-0.5 rounded-full text-xs ${
                       mpn.statut_qualification === 'Qualifié' ? 'bg-teal-700/10 text-teal-700' : 'bg-slate-100 text-slate-500'
@@ -79,10 +82,11 @@ export default function ArticleDetailPage() {
                       {mpn.statut_qualification}
                     </span>
                   </td>
+                  <td className="py-2 text-slate-500">{mpn.date_qualification || '—'}</td>
                 </tr>
               ))}
               {(!article.mpn_qualifies || article.mpn_qualifies.length === 0) && (
-                <tr><td colSpan={5} className="py-4 text-center text-slate-400">Aucun fabricant qualifié</td></tr>
+                <tr><td colSpan={7} className="py-4 text-center text-slate-400">Aucun fabricant qualifié</td></tr>
               )}
             </tbody>
           </table>
@@ -112,7 +116,14 @@ export default function ArticleDetailPage() {
               <div className="flex justify-between"><dt className="text-slate-500">Famille achats</dt><dd>{article.famille_achat || '—'}</dd></div>
               <div className="flex justify-between"><dt className="text-slate-500">Catégorie</dt><dd>{article.categorie || '—'}</dd></div>
               <div className="flex justify-between"><dt className="text-slate-500">Site</dt><dd>{article.site || '—'}</dd></div>
+              <div className="flex justify-between"><dt className="text-slate-500">Acheteur</dt><dd>{article.acheteur || '—'}</dd></div>
             </dl>
+            {article.long_desc && (
+              <p className="text-xs text-slate-500 mt-3 pt-3 border-t border-slate-100">{article.long_desc}</p>
+            )}
+            {article.description_libre && (
+              <p className="text-xs text-slate-400 mt-2 whitespace-pre-line">{article.description_libre}</p>
+            )}
           </div>
 
           <div className="bg-white border border-slate-200 rounded-lg p-5">

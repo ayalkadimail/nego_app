@@ -7,6 +7,7 @@ export default function MpnQualifieModal({ articleId, onClose, onCreated }) {
     mpn_ref_interne: '',
     pays_origine: '',
     fabricant_nom: '',
+    fournisseur_nom: '',
     statut_qualification: 'En cours',
   });
   const [saving, setSaving] = useState(false);
@@ -77,6 +78,15 @@ export default function MpnQualifieModal({ articleId, onClose, onCreated }) {
               onChange={handleChange('pays_origine')}
               className="w-full border border-slate-300 rounded px-3 py-2 text-sm"
               placeholder="ex: France"
+            />
+          </div>
+          <div>
+            <label className="text-xs text-slate-500">Fournisseur</label>
+            <input
+              value={form.fournisseur_nom}
+              onChange={handleChange('fournisseur_nom')}
+              className="w-full border border-slate-300 rounded px-3 py-2 text-sm"
+              placeholder="ex: Future Electronics"
             />
           </div>
           <div>

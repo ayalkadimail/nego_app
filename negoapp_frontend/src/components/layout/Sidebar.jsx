@@ -1,31 +1,100 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink } from "react-router-dom";
 
-const linkClass = ({ isActive }) =>
-  `block px-3 py-1.5 rounded text-sm ${
-    isActive ? 'bg-teal-700 text-white' : 'text-slate-300 hover:bg-navy-900'
-  }`;
-
-const sectionLabel = 'text-xs uppercase tracking-wide text-slate-500 px-3 mt-6 mb-2';
+const menus = [
+  {
+    title: "Pilotage",
+    items: [
+      {
+        text: "Tableau de bord",
+        to: "/tableau-de-bord",
+      },
+    ],
+  },
+  {
+    title: "Référentiel",
+    items: [
+      {
+        text: "Articles",
+        to: "/referentiel/articles",
+      },
+      {
+        text: "Fournisseurs",
+        to: "/referentiel/fournisseurs",
+      },
+    ],
+  },
+  {
+    title: "Achats",
+    items: [
+      {
+        text: "Offres fournisseurs",
+        to: "/offres",
+      },
+      {
+        text: "Négociations",
+        to: "/negociations",
+      },
+      {
+        text: "Historique",
+        to: "/historique",
+      },
+    ],
+  },
+];
 
 export default function Sidebar() {
   return (
-    <aside className="w-64 bg-navy-950 text-white min-h-screen p-4 flex-shrink-0">
-      <div className="px-3 mb-6">
-        <div className="text-lg font-bold">NegoApp</div>
-        <div className="text-xs text-slate-400 tracking-wide">TRONICO ATLAS · ACHATS</div>
+    <aside className="w-72 bg-slate-900 text-white min-h-screen border-r border-slate-800 flex flex-col">
+
+      {/* Logo */}
+      <div className="px-6 py-8 border-b border-slate-800">
+        <h1 className="text-2xl font-bold tracking-tight">
+          NegoApp
+        </h1>
+
+        <p className="text-slate-400 text-sm mt-1">
+          TRONICO ATLAS
+        </p>
       </div>
 
-      <div className={sectionLabel}>Pilotage</div>
-      <NavLink to="/tableau-de-bord" className={linkClass}>Tableau de bord</NavLink>
-      <NavLink to="/offres" className={linkClass}>Offres fournisseurs</NavLink>
+      {/* Navigation */}
+      <nav className="flex-1 px-4 py-6">
 
-      <div className={sectionLabel}>Négociations</div>
-      <NavLink to="/negociations" className={linkClass}>Liste des négociations</NavLink>
+        {menus.map((section) => (
+          <div key={section.title} className="mb-8">
 
-      <div className={sectionLabel}>Référentiels</div>
-      <NavLink to="/referentiel/articles" className={linkClass}>Articles</NavLink>
-      <NavLink to="/referentiel/fournisseurs" className={linkClass}>Fournisseurs</NavLink>
-      <NavLink to="/historique" className={linkClass}>Historique</NavLink>
+            <p className="uppercase text-xs text-slate-500 mb-3 px-3 tracking-widest">
+              {section.title}
+            </p>
+
+            {section.items.map((item) => (
+              <NavLink
+                key={item.text}
+                to={item.to}
+                className={({ isActive }) =>
+                  `block rounded-xl px-4 py-3 mb-2 transition-all duration-200 ${
+                    isActive
+                      ? "bg-blue-600 text-white shadow-md"
+                      : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                  }`
+                }
+              >
+                {item.text}
+              </NavLink>
+            ))}
+
+          </div>
+        ))}
+
+      </nav>
+
+      {/* Bas de la sidebar */}
+      <div className="border-t border-slate-800 p-5">
+        <button className="w-full rounded-lg border border-slate-700 px-4 py-2 text-slate-400 hover:bg-slate-800 hover:text-white transition">
+          Paramètres
+        </button>
+      </div>
+
     </aside>
   );
 }

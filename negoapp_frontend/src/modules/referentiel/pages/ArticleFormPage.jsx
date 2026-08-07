@@ -6,12 +6,15 @@ import { FAMILLES_ACHAT, CATEGORIES, CLIENTS, SITES } from '../constants';
 const EMPTY_FORM = {
   cpn: '',
   short_desc: '',
+  long_desc: '',
   famille_achat: '',
   categorie: '',
   customer: '',
   site: '',
+  acheteur: '',
   pma: '',
   obsolete: false,
+  description_libre: '',
 };
 
 export default function ArticleFormPage() {
@@ -30,12 +33,15 @@ export default function ArticleFormPage() {
       setForm({
         cpn: article.cpn,
         short_desc: article.short_desc || '',
+        long_desc: article.long_desc || '',
         famille_achat: article.famille_achat || '',
         categorie: article.categorie || '',
         customer: article.customer || '',
         site: article.site || '',
+        acheteur: article.acheteur || '',
         pma: article.pma ?? '',
         obsolete: article.obsolete,
+        description_libre: article.description_libre || '',
       });
       setLoading(false);
     });
@@ -156,6 +162,38 @@ export default function ArticleFormPage() {
             <option value="">— Non renseigné —</option>
             {SITES.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
+        </div>
+
+        <div>
+          <label className="text-sm font-medium text-navy-950">Acheteur</label>
+          <input
+            value={form.acheteur}
+            onChange={handleChange('acheteur')}
+            placeholder="ex: EKIVI"
+            className="w-full border border-slate-300 rounded-lg px-3 py-2 mt-1"
+          />
+        </div>
+
+        <div className="col-span-2">
+          <label className="text-sm font-medium text-navy-950">Description longue</label>
+          <textarea
+            value={form.long_desc}
+            onChange={handleChange('long_desc')}
+            rows={2}
+            placeholder="ex: 2.7PF 50V 0.25PF"
+            className="w-full border border-slate-300 rounded-lg px-3 py-2 mt-1"
+          />
+        </div>
+
+        <div className="col-span-2">
+          <label className="text-sm font-medium text-navy-950">Description libre</label>
+          <textarea
+            value={form.description_libre}
+            onChange={handleChange('description_libre')}
+            rows={2}
+            placeholder="Notes / sources alternatives issues du RFQ"
+            className="w-full border border-slate-300 rounded-lg px-3 py-2 mt-1"
+          />
         </div>
 
         {isEdit && (
